@@ -42,6 +42,29 @@ app.get('/boardgames/:id', async (req, res, next) => {
     }
 })
 
+app.post('/boardgames/:id', async (req, res, next) => {
+    let {
+        id
+    } = req.params;
+
+    console.log(req.body);
+    if (!req.body.id) {
+        res.status(400).send('Bad request: id missing');
+        return;
+    }
+
+    try {
+        await mongodb.connectDatabase();
+        const newBoardgame = req.body.id;
+        await mongodb.addBoardgame(id, newBoardgame);
+        res.status(200).json("Boardgame added!")
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
+})
+
 app.listen(port, () => {
     console.log(`Boardgame app API listening at http://localhost:${port}`)
 })

@@ -25,16 +25,34 @@ async function getUsers() {
 }
 
 async function getUserBoardgames(userId) {
-    const user = await usersCollection.findOne({
+    const user = await findUser(userId);
+    return user.boardgames;
+}
+
+async function addBoardgame(userId, gameId) {
+    let boardgames = await getUserBoardgames(userId);
+    boardgames.push(gameId);
+    const result = await usersCollection.updateOne({
+        _id: mongodb.ObjectId(userId)
+    }, {
+        $set: {
+            boardgames: boardgames
+        }
+    });
+    console.log(result)
+    return result;
+}
+
+async function findUser(userId) {
+    return await usersCollection.findOne({
         _id: mongodb.ObjectId(userId)
     });
-
-    return user.boardgames;
 }
 
 export {
     connectDatabase,
     closeConnection,
     getUsers,
-    getUserBoardgames
+    getUserBoardgames,
+    addBoardgame
 }
