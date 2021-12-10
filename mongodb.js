@@ -9,6 +9,8 @@ const client = new mongodb.MongoClient(uri, {
 });
 
 const usersCollection = client.db('gamenightapp').collection('users');
+const boardgamesCollection = client.db('gamenightapp').collection('boardgames');
+const gamenightsCollection = client.db('gamenightapp').collection('gamenights');
 
 async function connectDatabase() {
     await client.connect();
@@ -43,10 +45,34 @@ async function addBoardgame(userId, gameId) {
     return result;
 }
 
+async function deleteBoardgame(userId, gameId) {
+    let boardgames = await getUserBoardgames(userId);
+    boardgames.splice(boardgames.indexOf(gameId), 1);
+    const result = await usersCollection.updateOne({
+        _id: mongodb.ObjectId(userId)
+    }, {
+        $set: {
+            boardgames: boardgames
+        }
+    });
+    return result;
+}
+
 async function findUser(userId) {
     return await usersCollection.findOne({
         _id: mongodb.ObjectId(userId)
     });
+}
+
+async function getBoardgames() {
+    const boardgames = await boardgamesCollection.find({}).toArray();
+    return boardgames;
+}
+
+async function getGamenights() {
+    const gamenights = await gamenightsCollection.find({}).toArray();
+    return gamenights;
+
 }
 
 export {
@@ -54,5 +80,8 @@ export {
     closeConnection,
     getUsers,
     getUserBoardgames,
-    addBoardgame
+    addBoardgame,
+    deleteBoardgame,
+    getBoardgames,
+    getGamenights
 }
