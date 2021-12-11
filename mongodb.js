@@ -17,7 +17,6 @@ const gamenightsCollection = client.db('gamenightapp').collection('gamenights');
 
 async function connectDatabase() {
     await client.connect();
-    console.log("Succesful connection!")
 }
 
 function closeConnection() {
@@ -40,12 +39,11 @@ async function getUserBoardgames(userId) {
     let userBoardgames = [];
     await userBoardgamesIds.forEach(async element => {
         const boardgame = await getBoardgame(element);
-        console.log("1", boardgame);
         userBoardgames.push(boardgame);
     })
 }
 
-async function addBoardgame(userId, gameId) {
+async function addUserBoardgame(userId, gameId) {
     let boardgames = await getUserBoardgamesId(userId);
     boardgames.push(gameId);
     const result = await usersCollection.updateOne({
@@ -55,12 +53,11 @@ async function addBoardgame(userId, gameId) {
             boardgames: boardgames
         }
     });
-    console.log(result)
     return result;
 }
 
-async function deleteBoardgame(userId, gameId) {
-    let boardgames = await getUserBoardgames(userId);
+async function deleteUserBoardgame(userId, gameId) {
+    let boardgames = await getUserBoardgamesId(userId);
     boardgames.splice(boardgames.indexOf(gameId), 1);
     const result = await usersCollection.updateOne({
         _id: mongodb.ObjectId(userId)
@@ -135,7 +132,6 @@ async function filterByPlayers(boardgames, amountOfPlayers) {
     let filteredBoardgames = boardgames.filter(boardgame => {
         return ((parseInt(amountOfPlayers) >= parseInt(boardgame["min-players"])) && (parseInt(amountOfPlayers) <= parseInt(boardgame["max-players"])));
     })
-    console.log(filteredBoardgames);
     return filteredBoardgames;
 }
 
@@ -149,7 +145,6 @@ async function deleteGamenight(id) {
     const result = await gamenightsCollection.deleteOne({
         _id: mongodb.ObjectId(id)
     });
-    console.log(result);
     return result;
 }
 
@@ -159,8 +154,8 @@ export {
     getUsers,
     getUserBoardgames,
     getUserBoardgamesId,
-    addBoardgame,
-    deleteBoardgame,
+    addUserBoardgame,
+    deleteUserBoardgame,
     getBoardgames,
     getGamenights,
     addGamenight,

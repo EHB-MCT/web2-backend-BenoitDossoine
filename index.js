@@ -57,8 +57,8 @@ app.post('/user/:userId/boardgames', async (req, res, next) => {
     try {
         await mongodb.connectDatabase();
         const newBoardgameId = req.body.id;
-        await mongodb.addBoardgame(userId, newBoardgameId);
-        res.status(200).json("Boardgame added!")
+        await mongodb.addUserBoardgame(userId, newBoardgameId);
+        res.status(200).json("Boardgame added to user collection!")
     } catch (error) {
         console.log(error);
     } finally {
@@ -74,7 +74,7 @@ app.delete('/user/:userId/boardgames/:boardgameId', async (req, res, next) => {
 
     try {
         await mongodb.connectDatabase();
-        await mongodb.deleteBoardgame(userId, boardgameId);
+        await mongodb.deleteUserBoardgame(userId, boardgameId);
         res.status(200).json(`Boardgame with id ${boardgameId} deleted from user ${userId}`);
     } catch (error) {
         console.log(error);
