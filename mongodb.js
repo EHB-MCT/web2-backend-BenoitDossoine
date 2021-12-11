@@ -111,7 +111,7 @@ async function buildGamenight(newGamenight) {
     boardgames = await filterByCategories(boardgames, chosenCategories);
     boardgames = await filterByDuration(boardgames, chosenDuration);
     boardgames = await filterByPlayers(boardgames, chosenAmountOfPlayers);
-    let boardgameIds = await boardgames.map(boardgame => boardgame._id);
+    let boardgameIds = boardgames.map(boardgame => boardgame._id);
     let builtGamenight = newGamenight;
     builtGamenight.games = boardgameIds;
     await addGamenight(builtGamenight);
@@ -145,6 +145,14 @@ async function addGamenight(newGamenight) {
     return result;
 }
 
+async function deleteGamenight(id) {
+    const result = await gamenightsCollection.deleteOne({
+        _id: mongodb.ObjectId(id)
+    });
+    console.log(result);
+    return result;
+}
+
 export {
     connectDatabase,
     closeConnection,
@@ -157,4 +165,5 @@ export {
     getGamenights,
     addGamenight,
     buildGamenight,
+    deleteGamenight
 }

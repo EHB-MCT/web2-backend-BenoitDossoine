@@ -130,6 +130,22 @@ app.post('/gamenights', async (req, res, next) => {
     } finally {
         mongodb.closeConnection();
     }
+});
+
+app.delete('/gamenights/:id', async (req, res, next) => {
+    const {
+        id
+    } = req.params;
+
+    try {
+        await mongodb.connectDatabase();
+        await mongodb.deleteGamenight(id);
+        res.status(200).json(`Gamenight ${id} deleted`)
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
 })
 
 app.listen(port, () => {
