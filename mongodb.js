@@ -1,5 +1,8 @@
 "use strict";
 
+import {
+    cp
+} from 'fs';
 import * as mongodb from 'mongodb';
 
 const uri = "mongodb+srv://admin:admin@cluster0.d2vw0.mongodb.net/WEB2?retryWrites=true&w=majority";
@@ -26,13 +29,24 @@ async function getUsers() {
     return users;
 }
 
-async function getUserBoardgames(userId) {
+async function getUserBoardgamesId(userId) {
     const user = await findUser(userId);
+    const boardgames = await user.boardgames;
     return user.boardgames;
 }
 
+async function getUserBoardgames(userId) {
+    let userBoardgamesIds = await getUserBoardgamesId(userId);
+    let userBoardgames = [];
+    await userBoardgamesIds.forEach(async element => {
+        const boardgame = await getBoardgame(element);
+        console.log("1", boardgame);
+        userBoardgames.push(boardgame);
+    })
+}
+
 async function addBoardgame(userId, gameId) {
-    let boardgames = await getUserBoardgames(userId);
+    let boardgames = await getUserBoardgamesId(userId);
     boardgames.push(gameId);
     const result = await usersCollection.updateOne({
         _id: mongodb.ObjectId(userId)
@@ -69,10 +83,66 @@ async function getBoardgames() {
     return boardgames;
 }
 
+async function getBoardgame(boardgameId) {
+    const boardgame = await boardgamesCollection.findOne({
+        _id: mongodb.ObjectId(boardgameId)
+    });
+    return boardgame;
+}
+
 async function getGamenights() {
     const gamenights = await gamenightsCollection.find({}).toArray();
     return gamenights;
+}
 
+async function buildGamenight(newGamenight) {
+    const chosenCategories = await newGamenight.categories;
+    const chosenDuration = await newGamenight.duration;
+    const chosenAmountOfPlayers = await newGamenight.amountOfPlayers;
+    const userGamesIds = await getUserBoardgamesId(newGamenight.ownerId);
+    let boardgames = []
+
+    for (let id in userGamesIds) {
+        const boardgame = await boardgamesCollection.findOne({
+            _id: mongodb.ObjectId(userGamesIds[id]),
+        })
+        boardgames.push(boardgame);
+    }
+    boardgames = await filterByCategories(boardgames, chosenCategories);
+    boardgames = await filterByDuration(boardgames, chosenDuration);
+    boardgames = await filterByPlayers(boardgames, chosenAmountOfPlayers);
+    let boardgameIds = await boardgames.map(boardgame => boardgame._id);
+    let builtGamenight = newGamenight;
+    builtGamenight.games = boardgameIds;
+    await addGamenight(builtGamenight);
+}
+
+async function filterByCategories(boardgames, chosenCategories) {
+    let filteredBoardgames = boardgames.filter(boardgame => {
+        return boardgame.categories.some(value => chosenCategories.includes(value));
+    });
+    return filteredBoardgames;
+}
+
+async function filterByDuration(boardgames, chosenDuration) {
+    let filteredBoardgames = boardgames.filter(boardgame => {
+        return parseInt(boardgame.duration) <= parseInt(chosenDuration);
+    });
+    return filteredBoardgames;
+}
+
+async function filterByPlayers(boardgames, amountOfPlayers) {
+    let filteredBoardgames = boardgames.filter(boardgame => {
+        return ((parseInt(amountOfPlayers) >= parseInt(boardgame["min-players"])) && (parseInt(amountOfPlayers) <= parseInt(boardgame["max-players"])));
+    })
+    console.log(filteredBoardgames);
+    return filteredBoardgames;
+}
+
+
+async function addGamenight(newGamenight) {
+    const result = await gamenightsCollection.insertOne(newGamenight);
+    return result;
 }
 
 export {
@@ -80,8 +150,11 @@ export {
     closeConnection,
     getUsers,
     getUserBoardgames,
+    getUserBoardgamesId,
     addBoardgame,
     deleteBoardgame,
     getBoardgames,
-    getGamenights
+    getGamenights,
+    addGamenight,
+    buildGamenight,
 }
