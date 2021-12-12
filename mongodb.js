@@ -1,11 +1,9 @@
 "use strict";
 
-import {
-    cp
-} from 'fs';
-import * as mongodb from 'mongodb';
+const mongodb = require('mongodb');
+require('dotenv').config();
 
-const uri = "mongodb+srv://admin:admin@cluster0.d2vw0.mongodb.net/WEB2?retryWrites=true&w=majority";
+const uri = process.env.FINAL_URL;
 const client = new mongodb.MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -148,7 +146,7 @@ async function deleteGamenight(id) {
     return result;
 }
 
-export {
+module.exports = {
     connectDatabase,
     closeConnection,
     getUsers,

@@ -1,12 +1,13 @@
 //Part of this code was written during the group project,
 //with Finn Janssens taking the biggest part of the coding on him.
-import * as mongodb from './mongodb.js';
+const mongodb = require('./mongodb.js');
 
-import express from 'express';
-import bodyParser from 'body-parser';
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT
 
 app.use(express.static('public'));
 app.use(express.json());
