@@ -5,6 +5,7 @@ const mongodb = require('./mongodb.js');
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT
@@ -12,6 +13,7 @@ const port = process.env.PORT
 app.use(express.static('public'));
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.status(300).redirect('/info.html');
