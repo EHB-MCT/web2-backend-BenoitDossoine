@@ -47,19 +47,19 @@ app.get('/user/:userId/boardgames', async (req, res, next) => {
 
 app.post('/user/:userId/boardgames', async (req, res, next) => {
     let {
-        userId
+        userId,
     } = req.params;
 
-    if (!req.body.id) {
-        res.status(400).send('Bad request: boardgame id missing');
+    if (!req.body.boardgame) {
+        res.status(400).send('Bad request: boardgame info missing');
         return;
     }
 
     try {
         await mongodb.connectDatabase();
-        const newBoardgameId = req.body.id;
-        await mongodb.addUserBoardgame(userId, newBoardgameId);
-        res.status(200).json("Boardgame added to user collection!")
+        const newBoardgame = req.body.boardgame;
+        const result = await mongodb.addUserBoardgame(userId, newBoardgame);
+        res.status(200).json(result);
     } catch (error) {
         console.log(error);
     } finally {
@@ -95,6 +95,55 @@ app.get('/boardgames', async (req, res, next) => {
         mongodb.closeConnection();
     }
 });
+
+app.get('/boardgames/:id', async (req, res, next) => {
+    let {
+        boardgameId
+    } = req.params;
+
+    try {
+        await mongodb.connectDatabase();
+        const boardgame = await mongodb.getBoardgame(boardgameId);
+        res.status(200).json(boardgame);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
+})
+
+app.post('/boardgames/', async (req, res, next) => {
+
+    if (!req.body.boardgame) {
+        res.status(400).json("Boardgame missing")
+    }
+
+    try {
+        await mongodb.connectDatabase();
+        const result = await mongodb.addBoardgame(req.body.boardgame);
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(200).json("Boardgame already existed in database");
+        }
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
+})
+
+app.post('/categories', async (req, res, next) => {
+    try {
+        await mongodb.connectDatabase();
+        const result = await mongodb.updateCategories(req.body.categories);
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
+})
 
 app.get('/gamenights', async (req, res, next) => {
     try {
