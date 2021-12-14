@@ -155,7 +155,7 @@ async function buildGamenight(newGamenight) {
 
     for (let id in userGamesIds) {
         const boardgame = await boardgamesCollection.findOne({
-            _id: mongodb.ObjectId(userGamesIds[id]),
+            _id: userGamesIds[id],
         })
         boardgames.push(boardgame);
     }

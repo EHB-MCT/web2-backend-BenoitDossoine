@@ -100,12 +100,12 @@ app.get('/boardgames', async (req, res, next) => {
 
 app.get('/boardgames/:id', async (req, res, next) => {
     let {
-        boardgameId
+        id
     } = req.params;
 
     try {
         await mongodb.connectDatabase();
-        const boardgame = await mongodb.getBoardgame(boardgameId);
+        const boardgame = await mongodb.getBoardgame(id);
         res.status(200).json(boardgame);
     } catch (error) {
         console.log(error);
