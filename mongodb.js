@@ -146,6 +146,12 @@ async function getGamenights() {
     return gamenights;
 }
 
+async function getUserGamenights(id) {
+    let gamenights = await getGamenights();
+    gamenights = gamenights.filter(gamenight => gamenight.ownerId == id);
+    return gamenights;
+}
+
 async function buildGamenight(newGamenight) {
     const chosenCategories = await newGamenight.categories;
     const chosenDuration = await newGamenight.duration;
@@ -215,6 +221,7 @@ module.exports = {
     addBoardgame,
     updateCategories,
     getGamenights,
+    getUserGamenights,
     addGamenight,
     buildGamenight,
     deleteGamenight

@@ -6,6 +6,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const res = require('express/lib/response');
 
 const app = express();
 const port = process.env.PORT
@@ -198,7 +199,23 @@ app.delete('/gamenights/:id', async (req, res, next) => {
     } finally {
         mongodb.closeConnection();
     }
-})
+});
+
+app.get('/user/:id/gamenights', async (req, res, next) => {
+    const {
+        id
+    } = req.params;
+
+    try {
+        await mongodb.connectDatabase();
+        const gamenights = await mongodb.getUserGamenights(id);
+        res.status(200).json(gamenights);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
+});
 
 app.listen(port, () => {
     console.log(`Boardgame app API listening at http://localhost:${port}`)
