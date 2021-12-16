@@ -44,7 +44,7 @@ app.get('/user/:userId/boardgames', async (req, res, next) => {
     } catch (error) {
         console.log(error);
     } finally {
-        // mongodb.closeConnection();
+        mongodb.closeConnection();
     }
 })
 
