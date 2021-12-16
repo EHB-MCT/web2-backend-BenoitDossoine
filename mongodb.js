@@ -36,10 +36,11 @@ async function getUserBoardgamesId(userId) {
 async function getUserBoardgames(userId) {
     let userBoardgamesIds = await getUserBoardgamesId(userId);
     let userBoardgames = [];
-    await userBoardgamesIds.forEach(async element => {
-        const boardgame = await getBoardgame(element);
+    for (let boardgamesId of userBoardgamesIds) {
+        const boardgame = await getBoardgame(boardgamesId);
         userBoardgames.push(boardgame);
-    })
+    }
+    return userBoardgames;
 }
 
 async function addUserBoardgame(userId, boardgame) {

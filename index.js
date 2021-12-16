@@ -39,7 +39,7 @@ app.get('/user/:userId/boardgames', async (req, res, next) => {
 
     try {
         await mongodb.connectDatabase();
-        const boardgames = await mongodb.getUserBoardgamesId(userId);
+        const boardgames = await mongodb.getUserBoardgames(userId);
         res.status(200).json(boardgames);
     } catch (error) {
         console.log(error);
