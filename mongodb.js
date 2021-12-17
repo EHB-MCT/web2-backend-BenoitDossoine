@@ -62,7 +62,6 @@ async function addUserBoardgame(userId, boardgame) {
     } else {
         return false;
     }
-
 }
 
 async function deleteUserBoardgame(userId, gameId) {
@@ -115,7 +114,7 @@ async function addBoardgame(boardgame) {
             minPlayers: boardgame["min_players"],
             maxPlayers: boardgame["max_players"],
             playtime: boardgame["min_playtime"],
-            description: boardgame.description,
+            description: boardgame["description_preview"],
             categories: categories
         }
         const result = await boardgamesCollection.insertOne(newBoardgame);
