@@ -124,6 +124,11 @@ async function addBoardgame(boardgame) {
     }
 }
 
+async function getCategories() {
+    const categories = await categoriesCollection.find({}).toArray();
+    return categories;
+}
+
 async function getCategory(categoryId) {
     const category = await categoriesCollection.findOne({
         _id: categoryId
@@ -233,6 +238,7 @@ module.exports = {
     getBoardgames,
     getBoardgame,
     addBoardgame,
+    getCategories,
     updateCategories,
     getGamenights,
     getUserGamenights,

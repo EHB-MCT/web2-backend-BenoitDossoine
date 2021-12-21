@@ -136,6 +136,18 @@ app.post('/boardgames/', async (req, res, next) => {
     }
 })
 
+app.get('/categories', async (req, res, next) => {
+    try {
+        await mongodb.connectDatabase();
+        const categories = await mongodb.getCategories();
+        res.status(200).json(categories);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
+})
+
 app.post('/categories', async (req, res, next) => {
     try {
         await mongodb.connectDatabase();
