@@ -135,10 +135,17 @@ async function getCategory(categoryId) {
     }
 }
 
+async function getCategoryId(categoryName) {
+    categoryName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+    let category = await categoriesCollection.findOne({
+        name: categoryName
+    })
+    return category._id;
+}
+
 
 async function updateCategories(categories) {
     return await categoriesCollection.insertMany(categories)
-
 }
 
 async function getGamenights() {
@@ -168,6 +175,7 @@ async function buildGamenight(newGamenight) {
     boardgames = await filterByCategories(boardgames, chosenCategories);
     boardgames = await filterByDuration(boardgames, chosenDuration);
     boardgames = await filterByPlayers(boardgames, chosenAmountOfPlayers);
+
     let boardgameIds = boardgames.map(boardgame => boardgame._id);
     let builtGamenight = newGamenight;
     builtGamenight.games = boardgameIds;
@@ -175,22 +183,28 @@ async function buildGamenight(newGamenight) {
 }
 
 async function filterByCategories(boardgames, chosenCategories) {
+    let chosenCategoriesId = [];
+
+    for (let category of chosenCategories) {
+        await getCategoryId(category)
+            .then(result => chosenCategoriesId.push(result));
+    }
     let filteredBoardgames = boardgames.filter(boardgame => {
-        return boardgame.categories.some(value => chosenCategories.includes(value));
+        return boardgame.categories.some(value => chosenCategoriesId.includes(value));
     });
     return filteredBoardgames;
 }
 
 async function filterByDuration(boardgames, chosenDuration) {
     let filteredBoardgames = boardgames.filter(boardgame => {
-        return parseInt(boardgame.duration) <= parseInt(chosenDuration);
+        return parseInt(boardgame.playtime) <= parseInt(chosenDuration);
     });
     return filteredBoardgames;
 }
 
 async function filterByPlayers(boardgames, amountOfPlayers) {
     let filteredBoardgames = boardgames.filter(boardgame => {
-        return ((parseInt(amountOfPlayers) >= parseInt(boardgame["min-players"])) && (parseInt(amountOfPlayers) <= parseInt(boardgame["max-players"])));
+        return ((parseInt(amountOfPlayers) >= parseInt(boardgame.minPlayers)) && (parseInt(amountOfPlayers) <= parseInt(boardgame.maxPlayers)));
     })
     return filteredBoardgames;
 }
