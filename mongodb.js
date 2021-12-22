@@ -188,6 +188,7 @@ async function buildGamenight(newGamenight) {
         throw 'No games found for the given parameters'
     }
     await addGamenight(builtGamenight);
+    return builtGamenight;
 }
 
 async function filterByCategories(boardgames, chosenCategories) {
