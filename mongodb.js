@@ -58,7 +58,7 @@ async function addUserBoardgame(userId, boardgame) {
                 boardgames: boardgames
             }
         });
-        return result;
+        return getBoardgame(boardgame.id);
     } else {
         return false;
     }
