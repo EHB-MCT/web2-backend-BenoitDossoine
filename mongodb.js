@@ -184,6 +184,9 @@ async function buildGamenight(newGamenight) {
     let boardgameIds = boardgames.map(boardgame => boardgame._id);
     let builtGamenight = newGamenight;
     builtGamenight.games = boardgameIds;
+    if (builtGamenight.games.length == 0) {
+        throw 'No games found for the given parameters'
+    }
     await addGamenight(builtGamenight);
 }
 

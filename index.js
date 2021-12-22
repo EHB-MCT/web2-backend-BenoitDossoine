@@ -189,9 +189,8 @@ app.post('/gamenights', async (req, res, next) => {
         const newGamenight = req.body;
         await mongodb.buildGamenight(newGamenight);
         res.status(200).json('Gamenight added!')
-
     } catch (error) {
-        console.log(error)
+        res.status(204).json('No games found with these parameters.')
     } finally {
         mongodb.closeConnection();
     }
