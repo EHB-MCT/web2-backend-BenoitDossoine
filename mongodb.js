@@ -170,6 +170,17 @@ async function getUserGamenights(id) {
     return gamenights;
 }
 
+async function getUserGamenight(id, gamenightId) {
+    let gamenight = await gamenightsCollection.findOne({
+        _id: mongodb.ObjectId(gamenightId)
+    });
+
+    const promises = gamenight.games.map(async gameId => await getBoardgame(gameId));
+    gamenight.games = await Promise.all(promises);
+
+    return gamenight;
+}
+
 async function buildGamenight(newGamenight) {
     const chosenCategories = await newGamenight.categories;
     const chosenDuration = await newGamenight.duration;
@@ -247,6 +258,7 @@ module.exports = {
     updateCategories,
     getGamenights,
     getUserGamenights,
+    getUserGamenight,
     addGamenight,
     buildGamenight,
     deleteGamenight

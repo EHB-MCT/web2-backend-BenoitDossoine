@@ -228,6 +228,23 @@ app.get('/user/:id/gamenights', async (req, res, next) => {
     }
 });
 
+app.get('/user/:id/gamenights/:gamenightId', async (req, res, next) => {
+    const {
+        id,
+        gamenightId
+    } = req.params;
+
+    try {
+        await mongodb.connectDatabase();
+        const gamenight = await mongodb.getUserGamenight(id, gamenightId);
+        res.status(200).json(gamenight);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        mongodb.closeConnection();
+    }
+})
+
 app.listen(port, () => {
     console.log(`Boardgame app API listening at http://localhost:${port}`)
 })
