@@ -5,11 +5,59 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
     <title>Document</title>
 </head>
 
 <body>
     <h1>Welcome to the gamenight API!</h1>
+    <h2>Routes:</h2>
+    <dl>
+        <dt>GET /users</dt>
+        <dd>Returns a list of all users</dd>
+
+        <dt>GET /user/:userId/boardgames</dt>
+        <dd>Returns a list of all boardgames of user with id 'userId'</dd>
+
+        <dt>POST /user/:userId/boardgames</dt>
+        <dd>Add a boardgame to the collection of user with id 'userId'</dd>
+
+        <dt>DELETE /user/:userId/boardgames/:boardgameId</dt>
+        <dd>Delete boardgame with id 'boardgameId' from the collection of user with id 'userId'</dd>
+
+        <dt>GET /boardgames</dt>
+        <dd>Returns a list of all boardgames that have ever been added to the database</dd>
+
+        <dt>POST /boardgames</dt>
+        <dd>Add a boardgame to the general library</dd>
+
+        <dt>GET /boardgames/:boardgameId</dt>
+        <dd>Return the boardgame with id 'boardgameId'</dd>
+
+        <dt>GET /categories</dt>
+        <dd>Return all existing categories</dd>
+
+        <dt>GET /categories</dt>
+        <dd>Return all existing categories</dd>
+
+        <dt>POST /categories</dt>
+        <dd>Update all existing categories</dd>
+
+        <dt>GET /gamenights</dt>
+        <dd>Return all existing gamenights</dd>
+
+        <dt>POST /gamenights</dt>
+        <dd>Create a gamenight with given parameters</dd>
+
+        <dt>DELETE /gamenights/:gamenightId</dt>
+        <dd>Delete gamenight with id 'gamenightId'</dd>
+
+        <dt>GET /user/:userId/gamenights</dt>
+        <dd>Return all existing gamenights from user with id 'userId'</dd>
+
+        <dt>GET /user/:userId/gamenights/:gamenightId</dt>
+        <dd>Return gamenight with id 'gamenightId' from user with id 'userId'</dd>
+    </dl>
 </body>
 
 </html>
