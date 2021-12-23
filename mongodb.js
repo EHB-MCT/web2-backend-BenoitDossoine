@@ -197,6 +197,7 @@ async function buildGamenight(newGamenight) {
     boardgames = await filterByCategories(boardgames, chosenCategories);
     boardgames = await filterByDuration(boardgames, chosenDuration);
     boardgames = await filterByPlayers(boardgames, chosenAmountOfPlayers);
+    boardgames = await reduceTotalTime(boardgames, chosenDuration);
 
     let boardgameIds = boardgames.map(boardgame => boardgame._id);
     let builtGamenight = newGamenight;
@@ -228,6 +229,22 @@ async function filterByPlayers(boardgames, amountOfPlayers) {
         return ((parseInt(amountOfPlayers) >= parseInt(boardgame.minPlayers)) && (parseInt(amountOfPlayers) <= parseInt(boardgame.maxPlayers)));
     })
     return filteredBoardgames;
+}
+
+async function reduceTotalTime(boardgames, chosenDuration) {
+    let totalTime = boardgames.reduce((a, b) => a.playtime + b.playtime);
+
+    while (totalTime > parseInt(chosenDuration)) {
+        const randomBgIndex = Math.floor(Math.random() * boardgames.length);
+
+        console.log(boardgames);
+        console.log(randomBgIndex);
+        totalTime -= boardgames[randomBgIndex].playtime;
+        boardgames = boardgames.splice(randomBgIndex, 1);
+        console.log(boardgames);
+
+    }
+    return boardgames;
 }
 
 
