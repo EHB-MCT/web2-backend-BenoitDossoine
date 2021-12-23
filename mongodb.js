@@ -199,14 +199,8 @@ async function buildGamenight(newGamenight) {
 }
 
 async function filterByCategories(boardgames, chosenCategories) {
-    let chosenCategoriesId = [];
-
-    for (let category of chosenCategories) {
-        await getCategoryId(category)
-            .then(result => chosenCategoriesId.push(result));
-    }
     let filteredBoardgames = boardgames.filter(boardgame => {
-        return boardgame.categories.some(value => chosenCategoriesId.includes(value));
+        return boardgame.categories.some(value => chosenCategories.includes(value));
     });
     return filteredBoardgames;
 }
