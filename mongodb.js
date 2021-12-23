@@ -159,8 +159,14 @@ async function getGamenights() {
 }
 
 async function getUserGamenights(id) {
-    let gamenights = await getGamenights();
-    gamenights = gamenights.filter(gamenight => gamenight.ownerId == id);
+    let gamenights = await gamenightsCollection.find({
+        ownerId: id
+    }).toArray();
+
+    for (let gamenight of gamenights) {
+        const promises = gamenight.games.map(async gameId => await getBoardgame(gameId));
+        gamenight.games = await Promise.all(promises);
+    }
     return gamenights;
 }
 
